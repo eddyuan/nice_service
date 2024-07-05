@@ -6,6 +6,7 @@ import 'package:nice_service/nice_service.dart';
 export './src/utils/exports.dart';
 export './src/extensions/exports.dart';
 export './src/locale/exports.dart';
+export './src/core/ns_material_app.dart';
 
 class NSNavObserver extends NavigatorObserver {
   @override
@@ -33,8 +34,13 @@ class NS {
   const NS._();
   static final List<RouteSettings?> _routeHistory = [];
   static List<RouteSettings?> get routeHistory => _routeHistory;
-  static final GlobalKey<NavigatorState> navigatorKey =
-      GlobalKey<NavigatorState>();
+
+  static GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+  static setNavigatorKey(GlobalKey<NavigatorState> v) {
+    _navigatorKey = v;
+  }
+
+  static GlobalKey<NavigatorState> get navigatorKey => _navigatorKey;
 
   static BuildContext? get context => navigatorKey.currentContext;
 //  static RouteSettings? get routeSettings =>

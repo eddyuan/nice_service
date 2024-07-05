@@ -47,7 +47,7 @@ class NSLocalizations {
 }
 
 class NSLocalizationsDelegate extends LocalizationsDelegate<NSLocalizations> {
-  final List<NSLocale> locales;
+  final Iterable<NSLocale> locales;
 
   const NSLocalizationsDelegate(this.locales);
 

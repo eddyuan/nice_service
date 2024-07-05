@@ -1,7 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:nice_service/src/locale/ns_localization.dart';
+import 'package:nice_service/nice_service.dart';
 
-import 'ns_locale.dart';
+class NSRootConfig {
+  final Locale? locale;
+  final LocalizationsDelegate<NSLocalizations> delegates;
+  final ThemeMode? themeMode;
+  final Iterable<Locale> supportedLocales;
+  const NSRootConfig({
+    this.locale,
+    required this.delegates,
+    this.themeMode,
+    this.supportedLocales = const [],
+  });
+}
 
 class NSRoot extends StatefulWidget {
   const NSRoot({
@@ -9,18 +20,19 @@ class NSRoot extends StatefulWidget {
     required this.builder,
     this.initialLocale,
     this.locales = const [],
-    this.themeMode,
+    this.initialThemeMode,
+    this.navigatorKey,
   });
 
   final Widget Function(
     BuildContext context,
-    Locale? locale,
-    LocalizationsDelegate<NSLocalizations> delegates,
-    ThemeMode? themeMode,
+    NSRootConfig config,
   ) builder;
   final Locale? initialLocale;
-  final List<NSLocale> locales;
-  final ThemeMode? themeMode;
+  final Iterable<NSLocale> locales;
+  final ThemeMode? initialThemeMode;
+
+  final GlobalKey<NavigatorState>? navigatorKey;
 
   static NSRootState? of([BuildContext? context]) {
     return context?.findAncestorStateOfType<NSRootState>();
@@ -31,8 +43,8 @@ class NSRoot extends StatefulWidget {
 }
 
 class NSRootState extends State<NSRoot> {
-  Locale? locale;
-  ThemeMode? themeMode;
+  late Locale? locale = widget.initialLocale;
+  late ThemeMode? themeMode = widget.initialThemeMode;
 
   @override
   void setState(VoidCallback fn) {
@@ -43,8 +55,7 @@ class NSRootState extends State<NSRoot> {
 
   @override
   void initState() {
-    locale = widget.initialLocale;
-    themeMode = widget.themeMode;
+    NS.setNavigatorKey(widget.navigatorKey ?? GlobalKey<NavigatorState>());
     super.initState();
   }
 
@@ -61,12 +72,23 @@ class NSRootState extends State<NSRoot> {
   }
 
   @override
+  void didChangeDependencies() {
+    if (widget.navigatorKey != null && widget.navigatorKey != NS.navigatorKey) {
+      NS.setNavigatorKey(widget.navigatorKey!);
+    }
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return widget.builder(
       context,
-      locale,
-      NSLocalizationsDelegate(widget.locales),
-      themeMode,
+      NSRootConfig(
+        locale: locale,
+        delegates: NSLocalizationsDelegate(widget.locales),
+        themeMode: themeMode,
+        supportedLocales: widget.locales.map((x) => x.locale).toList(),
+      ),
     );
   }
 }

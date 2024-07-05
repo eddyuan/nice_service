@@ -1,11 +1,11 @@
 name: nice_service
-description: "A new Flutter package project."
+description: 'Localization, Navigation, NavObserver, Global Theme'
 version: 0.0.1
-homepage:
+homepage: https://github.com/eddyuan/nice_service
 
 environment:
   sdk: '>=3.4.1 <4.0.0'
-  flutter: ">=1.17.0"
+  flutter: '>=1.17.0'
 
 dependencies:
   flutter:
