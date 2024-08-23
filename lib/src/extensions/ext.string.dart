@@ -65,25 +65,34 @@ extension NSStringExt on String {
   /// 获取起始n个字符
   String takeFirst(int n) => NSStringUtil.takeFirst(this, n);
 
+  /// 只保留字母和数字
   String get toLettersNumbersOnly => NSStringUtil.toLettersNumbersOnly(this);
 
-  /// 变成 MM/YY
-  String toCardExpiry() => NSStringUtil.toCardExpiry(this);
+  /// 只保留数字
+  String get toNumbersOnly => NSStringUtil.toNumbersOnly(this);
+
+  /// MMYY 变成 MM/YY
+  String get toCardExpiry => NSStringUtil.toCardExpiry(this);
 
   /// 复制到剪切板
   Future<void> clipboardCopy() => NSStringUtil.clipboardCopy(this);
 
   /// 去掉多余的空格，拒绝后端垃圾数据
-  String get toSingleSpace => replaceAll(RegExp(r"\s+"), " ").trim();
+  String get toSingleSpace => NSStringUtil.toSingleSpace(this);
 
   /// 去掉多余的空格和换行，拒绝后端垃圾数据
-  String get toSingleSpaceNoBreak {
-    return replaceAll("\n", " ").toSingleSpace;
-  }
+  String get toSingleSpaceNoBreak => NSStringUtil.toSingleSpaceNoBreak(this);
 
   String or(String val) {
     if (isEmpty) {
       return val;
+    }
+    return this;
+  }
+
+  String? get orNull {
+    if (isEmpty) {
+      return null;
     }
     return this;
   }

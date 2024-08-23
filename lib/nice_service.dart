@@ -11,29 +11,57 @@ export './src/core/ns_material_app.dart';
 class NSNavObserver extends NavigatorObserver {
   @override
   void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    NS._routeHistory.add(route);
     super.didPush(route, previousRoute);
-    NS._routeHistory.add(route.settings);
-  }
-
-  @override
-  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
-    super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
-
-    NS._routeHistory.removeLast();
-    NS._routeHistory.add(newRoute?.settings);
   }
 
   @override
   void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    NS._routeHistory.remove(route);
     super.didPop(route, previousRoute);
-    NS._routeHistory.removeLast();
   }
+
+  @override
+  void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    NS._routeHistory.remove(route);
+    super.didRemove(route, previousRoute);
+  }
+
+  @override
+  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
+    if (oldRoute != null && newRoute != null) {
+      final int index = NS._routeHistory.indexOf(oldRoute);
+      if (index >= 0) {
+        NS._routeHistory[index] = newRoute;
+      }
+    }
+    super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
+  }
+  // @override
+  // void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
+  //   super.didPush(route, previousRoute);
+  //   NS._routeHistory.add(route.settings);
+  // }
+
+  // @override
+  // void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
+  //   super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
+
+  //   NS._routeHistory.removeLast();
+  //   NS._routeHistory.add(newRoute?.settings);
+  // }
+
+  // @override
+  // void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
+  //   super.didPop(route, previousRoute);
+  //   NS._routeHistory.removeLast();
+  // }
 }
 
 class NS {
   const NS._();
-  static final List<RouteSettings?> _routeHistory = [];
-  static List<RouteSettings?> get routeHistory => _routeHistory;
+  static final List<Route<dynamic>> _routeHistory = [];
+  static List<Route<dynamic>?> get routeHistory => _routeHistory;
 
   static GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
   static setNavigatorKey(GlobalKey<NavigatorState> v) {
@@ -45,7 +73,7 @@ class NS {
   static BuildContext? get context => navigatorKey.currentContext;
 //  static RouteSettings? get routeSettings =>
 //       context != null ? ModalRoute.of(context!)?.settings : null;
-  static RouteSettings? get routeSettings => routeHistory.lastOrNull;
+  static RouteSettings? get routeSettings => routeHistory.lastOrNull?.settings;
 
   static String? get currentRoute => routeSettings?.name;
   static Object? get arguments => routeSettings?.arguments;

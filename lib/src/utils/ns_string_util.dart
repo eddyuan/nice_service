@@ -164,13 +164,25 @@ class NSStringUtil {
 
   /// 只保留字母和数字
   static toLettersNumbersOnly(String value) {
-    RegExp regExp = RegExp(r'[a-zA-Z0-9]');
-    Iterable<RegExpMatch> matches = regExp.allMatches(value);
-    String result = matches.map((match) => match.group(0)!).join('');
-    return result;
+    return value.replaceAll(RegExp(r'[^a-zA-Z0-9]'), "");
   }
 
-  /// 变成 MM/YY
+  /// 只保留数字
+  static toNumbersOnly(String value) {
+    return value.replaceAll(RegExp(r'[^0-9]'), "");
+  }
+
+  /// 去掉多余的空格，拒绝后端垃圾数据
+  static toSingleSpace(String value) {
+    return value.replaceAll(RegExp(r"\s+"), " ").trim();
+  }
+
+  ///  去掉多余的空格和换行，拒绝后端垃圾数据
+  static toSingleSpaceNoBreak(String value) {
+    return value.replaceAll("\n", " ").replaceAll(RegExp(r"\s+"), " ").trim();
+  }
+
+  /// MMYY 变成 MM/YY
   static String toCardExpiry(
     String value, {
     String separator = "/",

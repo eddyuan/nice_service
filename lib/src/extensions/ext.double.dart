@@ -1,4 +1,4 @@
 extension NSDoubleExt on double {
   String toStringAsFixedNoZero(int n) =>
-      double.parse(toStringAsFixed(n)).toString();
+      toStringAsFixed(n).replaceFirst(RegExp(r'\.?0*$'), '');
 }
