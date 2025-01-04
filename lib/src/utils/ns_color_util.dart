@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 class NSColorUtil {
   const NSColorUtil._();
 
+  static Color wOpacity(Color color, double opacity) {
+    return color.withAlpha((255.0 * opacity).round());
+  }
+
   /// Check if the color is dark
   static bool isDark(Color color, {double threshold = 0.15}) {
     final double relativeLuminance = color.computeLuminance();
