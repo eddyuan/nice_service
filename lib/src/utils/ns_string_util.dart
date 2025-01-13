@@ -159,7 +159,7 @@ class NSStringUtil {
   static String takeFirst(String value, int n) {
     if (n <= 0) return "";
     if (n >= value.length) return value;
-    return value.substring(0, n + 1);
+    return value.substring(0, n);
   }
 
   /// 只保留字母和数字
