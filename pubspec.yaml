@@ -1,10 +1,10 @@
 name: nice_service
 description: 'Localization, Navigation, NavObserver, Global Theme'
-version: 0.0.2
+version: 0.0.3
 homepage: https://github.com/eddyuan/nice_service
 
 environment:
-  sdk: '>=3.4.1 <4.0.0'
+  sdk: '>=3.3.4 <4.0.0'
   flutter: '>=1.17.0'
 
 dependencies:

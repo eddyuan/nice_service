@@ -309,7 +309,7 @@ class NS {
     RouteSettings? routeSettings,
     AnimationController? transitionAnimationController,
     Offset? anchorPoint,
-    AnimationStyle? sheetAnimationStyle,
+    // AnimationStyle? sheetAnimationStyle,
     // BuildContext
     BuildContext? context,
   }) async {
@@ -339,7 +339,7 @@ class NS {
                 : null),
         transitionAnimationController: transitionAnimationController,
         anchorPoint: anchorPoint,
-        sheetAnimationStyle: sheetAnimationStyle,
+        // sheetAnimationStyle: sheetAnimationStyle,
       );
     }
     return null;

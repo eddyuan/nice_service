@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:nice_service/nice_service.dart';
 
 class NSConvert {
@@ -109,7 +110,10 @@ class NSConvert {
     return val is Map<K, T> ? val : v;
   }
 
-  static List<T> tList<T>(val) {
+  static List<T> tList<T>(
+    val, {
+    T? Function(dynamic item)? mapper,
+  }) {
     List list = [];
     if (val is List) {
       list = val;
@@ -119,7 +123,12 @@ class NSConvert {
         if (decodedJSON is List) {
           list = decodedJSON;
         }
-      } catch (e) {}
+      } catch (e) {
+        debugPrint("Unable to convert to list from string: $e");
+      }
+    }
+    if (mapper != null) {
+      return list.map((x) => mapper(x)).whereType<T>().toList();
     }
     if (list is List<T>) {
       return list;
@@ -146,8 +155,9 @@ class NSConvert {
   static List<T>? tListOrNull<T>(
     val, {
     bool allowEmpty = false,
+    T? Function(dynamic item)? mapper,
   }) {
-    final List<T> list = tList<T>(val);
+    final List<T> list = tList<T>(val, mapper: mapper);
     if (list.isNotEmpty) {
       return list;
     }
@@ -369,13 +379,18 @@ double tDouble(dynamic value, {double defaultValue = 0.0}) =>
 
 Map<K, T> tMap<K, T>(val) => NSConvert.tMap(val);
 
-List<T> tList<T>(val) => NSConvert.tList(val);
+List<T> tList<T>(
+  val, {
+  T? Function(dynamic item)? mapper,
+}) =>
+    NSConvert.tList(val, mapper: mapper);
 
 List<T>? tListOrNull<T>(
   val, {
   bool allowEmpty = false,
+  T? Function(dynamic item)? mapper,
 }) =>
-    NSConvert.tListOrNull(val, allowEmpty: allowEmpty);
+    NSConvert.tListOrNull(val, allowEmpty: allowEmpty, mapper: mapper);
 
 DateTime? tTime(
   dynamic val, {
