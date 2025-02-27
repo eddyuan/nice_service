@@ -1,9 +1,52 @@
 import 'package:flutter/material.dart';
+import 'dart:math' as math;
 
 class NSColorUtil {
   const NSColorUtil._();
 
-  static Color wOpacity(Color color, double opacity) {
+  static int _tintValue(int value, double factor) =>
+      math.max(0, math.min((value + ((255 - value) * factor)).round(), 255));
+
+  static Color tint(Color color, double factor) => Color.fromRGBO(
+      _tintValue(color.red, factor),
+      _tintValue(color.green, factor),
+      _tintValue(color.blue, factor),
+      1);
+
+  static int _shadeValue(int value, double factor) =>
+      math.max(0, math.min(value - (value * factor).round(), 255));
+
+  static Color shade(Color color, double factor) => Color.fromRGBO(
+      _shadeValue(color.red, factor),
+      _shadeValue(color.green, factor),
+      _shadeValue(color.blue, factor),
+      1);
+
+  static int _lightenValue(int value, double factor) =>
+      math.max(0, math.min(value + (value * factor).round(), 255));
+
+  static Color lighten(Color color, double factor) => Color.fromRGBO(
+      _lightenValue(color.red, factor),
+      _lightenValue(color.green, factor),
+      _lightenValue(color.blue, factor),
+      1);
+
+  static MaterialColor materialColor(Color color) {
+    return MaterialColor(color.value, {
+      50: tint(color, 1 * 0.95),
+      100: tint(color, 0.8 * 0.95),
+      200: tint(color, 0.6 * 0.95),
+      300: tint(color, 0.4 * 0.95),
+      400: tint(color, 0.2 * 0.95),
+      500: color,
+      600: shade(color, 0.15),
+      700: shade(color, 0.3),
+      800: shade(color, 0.45),
+      900: shade(color, 0.6),
+    });
+  }
+
+  static Color withOpacity(Color color, double opacity) {
     return color.withAlpha((255.0 * opacity).round());
   }
 
