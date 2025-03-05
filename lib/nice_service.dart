@@ -346,10 +346,7 @@ class NS {
   }
 
   /// Conversion methods 数据转换为Flutter
-  static FontWeight fontWeightFromData(
-    dynamic data, {
-    FontWeight defaultValue = FontWeight.normal,
-  }) {
+  static FontWeight? fontWeightFromData(dynamic data) {
     final String str = tString(data).toLowerCase().trim();
     switch (str) {
       case 'bold':
@@ -379,13 +376,10 @@ class NS {
         return FontWeight.w800;
       }
     }
-    return defaultValue;
+    return null;
   }
 
-  static TextAlign textAlignFromData(
-    dynamic data, {
-    TextAlign defaultValue = TextAlign.left,
-  }) {
+  static TextAlign? textAlignFromData(dynamic data) {
     final String str = tString(data).toLowerCase().trim();
     switch (str) {
       case 'left':
@@ -395,14 +389,38 @@ class NS {
       case 'right':
         return TextAlign.right;
       default:
-        return defaultValue;
+        return null;
     }
   }
 
   static Color? colorFromHex(String? hexString) {
-    if (hexString != null && hexString.isNotEmpty) {
-      String validHex = hexString.replaceAll("#", "");
+    try {
+      final colorString = hexString?.trim();
+      if (colorString == null || colorString.isEmpty) return null;
+      final rgbRegex = RegExp(r"rgb\((\d+),\s*(\d+),\s*(\d+)\)");
+      if (rgbRegex.hasMatch(colorString)) {
+        final match = rgbRegex.firstMatch(colorString)!;
+        return Color.fromARGB(
+          255,
+          int.parse(match.group(1)!),
+          int.parse(match.group(2)!),
+          int.parse(match.group(3)!),
+        );
+      }
+      final rgbaRegex =
+          RegExp(r"rgba\((\d+),\s*(\d+),\s*(\d+),\s*(\d*\.?\d+)\)");
+      if (rgbaRegex.hasMatch(colorString)) {
+        final match = rgbaRegex.firstMatch(colorString)!;
+        return Color.fromARGB(
+          (double.parse(match.group(4)!) * 255).round(),
+          int.parse(match.group(1)!),
+          int.parse(match.group(2)!),
+          int.parse(match.group(3)!),
+        );
+      }
 
+      // if (colorString != null && hexString.isNotEmpty) {
+      String validHex = colorString.replaceAll("#", "");
       if (validHex.length == 6) {
         validHex = "ff$validHex";
       }
@@ -411,6 +429,8 @@ class NS {
         buffer.write(validHex);
         return Color(int.parse(buffer.toString(), radix: 16));
       }
+    } catch (e) {
+      debugPrint(e.toString());
     }
     return null;
   }
