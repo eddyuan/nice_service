@@ -114,11 +114,20 @@ class NS {
     return _nState(context)?.push<T>(route);
   }
 
-  static Future<T?>? pushNamed<T extends Object?>(
+  static Future<T?>? pushNamed<T extends Object?, TO extends Object?>(
     String routeName, {
     Object? arguments,
     BuildContext? context,
+    TO? result,
+    bool? replace,
   }) {
+    if (replace == true) {
+      return _nState(context)?.pushReplacementNamed<T, TO>(
+        routeName,
+        arguments: arguments,
+        result: result,
+      );
+    }
     return _nState(context)?.pushNamed<T>(
       routeName,
       arguments: arguments,
@@ -130,6 +139,24 @@ class NS {
     BuildContext? context,
   }) {
     return _nState(context)?.popUntil(predicate);
+  }
+
+  static RoutePredicate routePredicateNamesOrRoot(List<String> names) {
+    return (Route<dynamic> route) {
+      if (route is! ModalRoute) return false;
+      final routeName = route.settings.name;
+      // Stop popping if we find a route in the list
+      if (routeName != null && names.contains(routeName)) return true;
+      // Stop at root if no route matches
+      return route.isFirst;
+    };
+  }
+
+  static void popUntilNamed(
+    List<String> names, {
+    BuildContext? context,
+  }) {
+    return _nState(context)?.popUntil(routePredicateNamesOrRoot(names));
   }
 
   static Future<T?>? popAndPushNamed<T extends Object?, TO extends Object?>(
@@ -210,6 +237,19 @@ class NS {
     return _nState(context)?.pushNamedAndRemoveUntil(
       newRouteName,
       predicate,
+      arguments: arguments,
+    );
+  }
+
+  static Future<T?>? pushNamedAndRemoveUntilNames<T extends Object?>(
+    String newRouteName,
+    List<String> names, {
+    Object? arguments,
+    BuildContext? context,
+  }) {
+    return _nState(context)?.pushNamedAndRemoveUntil(
+      newRouteName,
+      routePredicateNamesOrRoot(names),
       arguments: arguments,
     );
   }

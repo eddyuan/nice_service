@@ -1,6 +1,6 @@
 name: nice_service
 description: 'Localization, Navigation, NavObserver, Global Theme'
-version: 0.0.3
+version: 0.0.5
 homepage: https://github.com/eddyuan/nice_service
 
 environment:
@@ -14,7 +14,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.0
+  flutter_lints: ^6.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
