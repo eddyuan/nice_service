@@ -170,20 +170,25 @@ class NSConvert {
     final bool toLocal = true,
   }) {
     DateTime? result;
-    if (val is DateTime) {
-      result = val;
-    } else if (val is int || val is double) {
-      if (val < 100000000000) {
-        result = DateTime.fromMillisecondsSinceEpoch(val * 1000);
-      } else {
-        result = DateTime.fromMillisecondsSinceEpoch(val);
+    try {
+      if (val is DateTime) {
+        result = val;
+      } else if (val is int || val is double) {
+        final valInt = tInt(val);
+        if (valInt < 100000000000) {
+          result = DateTime.fromMillisecondsSinceEpoch(valInt * 1000);
+        } else {
+          result = DateTime.fromMillisecondsSinceEpoch(valInt);
+        }
+      } else if (val is String) {
+        result = DateTime.tryParse(val);
       }
-    } else if (val is String) {
-      result = DateTime.parse(val);
-    }
 
-    if (toLocal) {
-      return result?.toLocal();
+      if (toLocal) {
+        return result?.toLocal();
+      }
+    } catch (e) {
+      debugPrint(e.toString());
     }
     return result;
   }
@@ -303,27 +308,31 @@ class NSConvert {
     return value.toString().padLeft(2, '0');
   }
 
-  static String? tDateString(val) {
+  static String? tDateString(dynamic val) {
     DateTime? d;
-    if (val is int || val is double) {
-      final int intVal = val is int ? val : val.round();
-      if (intVal < 100000000000) {
-        d = DateTime.fromMillisecondsSinceEpoch(intVal * 1000);
-      } else {
-        d = DateTime.fromMillisecondsSinceEpoch(intVal);
+    try {
+      if (val is int || val is double) {
+        final int intVal = val is int ? val : val.round();
+        if (intVal < 100000000000) {
+          d = DateTime.fromMillisecondsSinceEpoch(intVal * 1000);
+        } else {
+          d = DateTime.fromMillisecondsSinceEpoch(intVal);
+        }
+      } else if (val is String) {
+        d = DateTime.tryParse(val);
+      } else if (val is DateTime) {
+        d = val;
       }
-    } else if (val is String) {
-      d = DateTime.parse(val);
-    } else if (val is DateTime) {
-      d = val;
-    }
 
-    if (d is DateTime) {
-      final String year = d.year.toString();
-      final String month = _padZero(d.month);
-      final String day = _padZero(d.day);
-      return '$year-$month-$day';
-      // return DateFormat('yyyy-MM-dd').format(d);
+      if (d is DateTime) {
+        final String year = d.year.toString();
+        final String month = _padZero(d.month);
+        final String day = _padZero(d.day);
+        return '$year-$month-$day';
+        // return DateFormat('yyyy-MM-dd').format(d);
+      }
+    } catch (e) {
+      debugPrint(e.toString());
     }
 
     return null;

@@ -1,6 +1,6 @@
 name: nice_service
 description: 'Localization, Navigation, NavObserver, Global Theme'
-version: 0.0.5
+version: 0.0.6
 homepage: https://github.com/eddyuan/nice_service
 
 environment:
